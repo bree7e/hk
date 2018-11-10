@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 
-import { fromEvent, merge, Observable, Subject } from 'rxjs';
+import { fromEvent, merge, Observable, Subject, BehaviorSubject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 export enum ViewportSize {
@@ -11,11 +11,11 @@ export enum ViewportSize {
 
 @Injectable()
 export class IfViewportSizeService implements OnDestroy {
-  /** Наблюдатель за размером */
-  private _viewportSizeObserver = new Subject<ViewportSize>();
+  private _viewportSizeObserver = new BehaviorSubject<ViewportSize>(null);
+  /** Поток текущего размера */
   readonly ViewportSize$ = this._viewportSizeObserver.asObservable();
+  private _mqlMap = new Map<ViewportSize, MediaQueryList>();
   private _destroy$ = new Subject<void>();
-  private _mqlMap = new Map<ViewportSize, string>();
 
   constructor() {
     // Есть подозрение, что Вы ожидали решение через NgZone и resize,
@@ -28,16 +28,27 @@ export class IfViewportSizeService implements OnDestroy {
   }
 
   public init(config: IConfig): void {
-    this._mqlMap.set(ViewportSize.SMALL, `(max-width: ${config.medium - 1}px)`);
-    this._mqlMap.set(ViewportSize.LARGE, `(min-width: ${config.large}px)`);
+    this._mqlMap.set(
+      ViewportSize.SMALL,
+      window.matchMedia(`(max-width: ${config.medium - 1}px)`)
+    );
+    this._mqlMap.set(
+      ViewportSize.LARGE,
+      window.matchMedia(`(min-width: ${config.large}px)`)
+    );
     this._mqlMap.set(
       ViewportSize.MEDIUM,
-      `(min-width: ${config.medium}px) and (max-width: ${config.large - 1}px)`
+      window.matchMedia(`(min-width: ${config.medium}px) and (max-width: ${config.large - 1}px)`)
     );
+    this._mqlMap.forEach((mql, key) => {
+      if (mql.matches) {
+        this._viewportSizeObserver.next(key);
+      }
+    });
   }
 
   private _sizeFactory(size: ViewportSize): Observable<ViewportSize> {
-    return fromEvent(window.matchMedia(this._mqlMap.get(size)), 'change').pipe(
+    return fromEvent(this._mqlMap.get(size), 'change').pipe(
       filter((e: MediaQueryListEvent) => e.matches),
       map(() => size)
     );
