@@ -15,7 +15,10 @@ import { FirstModule } from './first/first.module';
     BrowserModule,
     AppRoutingModule,
     FirstModule,
-    SecondModule,
+    SecondModule.forRoot({
+      medium: 300,
+      large: 500,
+    }),
     ThirdModule,
   ],
   providers: [],
