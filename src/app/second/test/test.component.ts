@@ -3,8 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'test-component',
-  templateUrl: './test.component.html',
-  styleUrls: ['./test.component.scss']
+  template: `<p><ng-content></ng-content></p>`
 })
 export class TestComponent implements OnInit {
 
