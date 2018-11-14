@@ -23,6 +23,6 @@ export class SecondModule {
           useValue: config
         }
       ]
-    }
+    };
   }
 }
