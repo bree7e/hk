@@ -1,6 +1,9 @@
 import { Directive, Input, TemplateRef, ViewContainerRef, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ViewportSize, IfViewportSizeService } from './if-viewport-size.service';
+
+import { IfViewportSizeService } from './if-viewport-size.service';
+import { IfViewportNgZoneSizeService } from './if-viewport-zone-size.service';
+import { ViewportSize } from './if-viewport-size.interface';
 
 @Directive({
   // tslint:disable-next-line:directive-selector
@@ -14,7 +17,8 @@ export class IfViewportSizeDirective implements OnInit, OnDestroy {
   constructor(
     private _templateRef: TemplateRef<any>,
     private _viewContainer: ViewContainerRef,
-    private _sizeService: IfViewportSizeService,
+    // private _sizeService: IfViewportSizeService,
+    private _sizeService: IfViewportNgZoneSizeService,
   ) {}
 
   ngOnInit(): void {

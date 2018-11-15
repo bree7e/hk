@@ -1,15 +1,9 @@
-import { Injectable, OnDestroy, Inject, InjectionToken } from '@angular/core';
+import { Injectable, OnDestroy, Inject } from '@angular/core';
 
 import { fromEvent, merge, Observable, Subject, BehaviorSubject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-export enum ViewportSize {
-  SMALL = 'small',
-  MEDIUM = 'medium',
-  LARGE = 'large',
-}
-
-export const ViewportConfig = new InjectionToken<IConfig>('ViewportConfig');
+import { ViewportSize, ViewportConfig, IConfig } from './if-viewport-size.interface';
 
 @Injectable()
 export class IfViewportSizeService implements OnDestroy {
@@ -20,8 +14,6 @@ export class IfViewportSizeService implements OnDestroy {
   private _destroy$ = new Subject<void>();
 
   constructor(@Inject(ViewportConfig) config) {
-    // Есть подозрение, что Вы ожидали решение через NgZone и resize,
-    // но как раз предложенное мной решение будет быстрее
     this._init(config);
     this._subscribeToMediaMatch();
   }
@@ -37,7 +29,9 @@ export class IfViewportSizeService implements OnDestroy {
     );
     this._mqlMap.set(
       ViewportSize.MEDIUM,
-      window.matchMedia(`(min-width: ${config.medium}px) and (max-width: ${config.large - 1}px)`)
+      window.matchMedia(
+        `(min-width: ${config.medium}px) and (max-width: ${config.large - 1}px)`
+      )
     );
     this._mqlMap.forEach((mql, key) => {
       if (mql.matches) {
