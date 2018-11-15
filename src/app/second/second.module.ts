@@ -12,7 +12,8 @@ import { IConfig, ViewportConfig } from './if-viewport-size.interface';
   declarations: [SecondComponent, TestComponent, IfViewportSizeDirective],
   imports: [
     CommonModule
-  ]
+  ],
+  exports: [ TestComponent, IfViewportSizeDirective ]
 })
 export class SecondModule {
   static forRoot(config: IConfig): ModuleWithProviders {

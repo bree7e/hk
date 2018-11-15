@@ -18,5 +18,11 @@ import { TabsComponent } from './tabs/tabs.component';
     TabsComponent,
   ],
   imports: [CommonModule],
+  exports: [
+    TabTitleDirective,
+    TabContentDirective,
+    TabComponent,
+    TabsComponent,
+  ],
 })
 export class FirstModule {}
